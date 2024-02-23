@@ -10,7 +10,7 @@ Para comenzar a trabajar en este proyecto en tu máquina local, sigue estos paso
 
     ```bash
    python -m venv envs/Nombre_del_entorno
-   .\envs\ombre_del_entorno\Scripts\Activate
+   .\envs\Nombre_del_entorno\Scripts\Activate
    pip install django
 
 2. Utiliza el siguiente comando para clonar el repositorio en tu máquina:
