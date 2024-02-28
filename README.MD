@@ -1,4 +1,4 @@
-# API-REST votos comite de etica
+# API-REST ESTANDAR DJANGO
 
 ## Clonar el Repositorio
 
