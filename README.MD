@@ -37,9 +37,11 @@ Para comenzar a trabajar en este proyecto en tu máquina local, sigue estos paso
 
     python manage.py createsuperuser
 
-> [!NOTE]
-> ## Push y Pull desde tu repositorio local
 
-   > --git push <-- con esto mandas al repo remoto todas las modificaciones de tu repo local, asi que cada vez que lo uses tienes que estar seguro de que tu proyecto este en una version estable y sin fallas o en  todo caso hacer una rama para hacer calis y hacer todos los push que quieras sin afectar la rama main que tiene la version estable.
+[!NOTE]
+## Push y Pull desde tu repositorio local
 
-   > --git pull <-- con esto actualizas los cambios que haya recibido el repo remoto en git-hub (solo de la rama main)
+- **git push**: Con este comando, mandas al repositorio remoto todas las modificaciones de tu repositorio local. Por lo tanto, cada vez que lo uses, debes estar seguro de que tu proyecto esté en una versión estable y sin fallas. En caso de necesitar realizar pruebas o cambios experimentales, se recomienda crear una rama para ello y hacer todos los push que quieras en esa rama sin afectar la rama `main`, que contiene la versión estable del proyecto.
+
+- **git pull**: Utiliza este comando para actualizar los cambios que haya recibido el repositorio remoto en GitHub, pero ten en cuenta que se aplicará solo a la rama `main`. Esto asegura que tu repositorio local esté al día con la última versión del proyecto en el repositorio remoto.
+
