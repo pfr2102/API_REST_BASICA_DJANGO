@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, DjangoModelPermissions
+from icard.permissions import CustomDjangoModelPermission #no es mas que DjangoModelPermissions nomas que sobre-escrito para que pueda bloquear lo get tambien
 from django.contrib.auth.hashers import make_password
 
 #importaciones necesarias para hacer solicitudes http personalizadas
@@ -14,9 +15,13 @@ from users.api.serializers import UserSerializer
 
 
 class UserApiViewSet(ModelViewSet):
-    permission_classes = [IsAdminUser]
+    #permission_classes = [IsAdminUser]
+    #de esta otra forma toma los permisos prestablecidos por rest framework y no los que le agregaste en el panel de administracion
+    permission_classes = [CustomDjangoModelPermission] 
+    #de esta forma toma los permisos del modelo que tu le agregaste desde el panel de administracion de django los cuales
+    #recuerda que se asignan a traves de un grupo al cual se le asignan los permisos como tipo roles
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
 
     #SOBRE-ESCRIBIMOS EL METODO CREATE DE LA SUPERCLASE DE LA QUE HEREDAMOS PARA QUE ENCRIPTE EL PASSWORD ANTES DE INSERTARLO EN LA BD
     def create(self, request, *args, **kwargs):
