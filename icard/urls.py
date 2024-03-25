@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from django.http import HttpResponse
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -38,6 +39,13 @@ schema_view = get_schema_view(
 )
 
 
+# Define la vista para la URL raíz
+def index(request):
+    return HttpResponse('''OK 200 <br> <br>
+                        /admin --> panel de administración de django <br>
+                        /docs --> documentación de la api <br>
+                        /redoc --> documentación de la api redoc''', status=200)
+
 urlpatterns = [
     #rutas globales de django
     path('admin/', admin.site.urls),
@@ -45,6 +53,7 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     #rutas de nuestras api
+    path('', index),  # Ruta para la URL raíz
     path('api/', include(router_user.urls)),
     path('api/', include('users.api.router')),#esta ruta es diferente porque es para saber los datos del usuario que se autentica
 ]
