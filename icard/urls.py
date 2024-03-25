@@ -60,7 +60,7 @@ urlpatterns = [
     #rutas de nuestras api
     path('', index),  # Ruta para la URL raíz
     path('api/', include(router_user.urls)),
-    path('api/', include('users.api.router')),#esta ruta es diferente porque es para saber los datos del usuario que se autentica
+    path('api/', include('users.api.router')),#esta ruta es diferente porque es para saber los datos del usuario que se autentica y de los grupos
 ]
 
 

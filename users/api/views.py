@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
+from django.contrib.auth.models import Group
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, DjangoModelPermissions
 from icard.permissions import CustomDjangoModelPermission #no es mas que DjangoModelPermissions nomas que sobre-escrito para que pueda bloquear lo get tambien
 from django.contrib.auth.hashers import make_password
@@ -11,7 +12,7 @@ from rest_framework.decorators import action
 
 #importaciones personales de nuestro proyecto
 from users.models import User
-from users.api.serializers import UserSerializer
+from users.api.serializers import UserSerializer, GroupSerializer
 
 
 class UserApiViewSet(ModelViewSet):
@@ -55,4 +56,18 @@ class UserView(APIView):
     
     def get(self, request):
         serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+    
+#creamos una vista para obtener todos los grupos
+class GroupView(APIView):
+    permission_classes = [CustomDjangoModelPermission] 
+    #permission_classes = [IsAuthenticated]  # O cualquier permiso que desees
+
+    def get_queryset(self):
+        return Group.objects.all().order_by('id')
+    
+    def get(self, request):
+        groups = self.get_queryset()
+        #groups = Group.objects.all()
+        serializer = GroupSerializer(groups, many=True)
         return Response(serializer.data)
