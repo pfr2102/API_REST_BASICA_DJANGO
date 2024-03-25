@@ -27,9 +27,9 @@ from users.api.router import router_user
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="iCard_ApiDoc",
+      title="API_BASE",
       default_version='v1',
-      description="documentacion de la api icard",
+      description="documentacion de la api",
       terms_of_service="https://pfr2102.github.io/PORTAFOLIO/",
       contact=openapi.Contact(email="pfrs2102@gmail.com"),
       license=openapi.License(name="BSD License"),
@@ -41,10 +41,10 @@ schema_view = get_schema_view(
 
 # Define la vista para la URL raíz
 def index(request):
-    return HttpResponse('''OK 200 <br> <br>
-                        /admin --> panel de administración de django <br>
-                        /docs --> documentación de la api <br>
-                        /redoc --> documentación de la api redoc''', status=200)
+    return HttpResponse('''<h2> OK 200 </h2>
+                        <h3> /admin --> panel de administración de django</h3> 
+                        <h3> /docs --> documentación de la api <h3> 
+                        <h3> /redoc --> documentación de la api redoc <h3>''', status=200)
 
 urlpatterns = [
     #rutas globales de django
