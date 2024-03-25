@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 import datetime
 from pathlib import Path
 
@@ -126,6 +127,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+#variables importantes para el trabajo de imagenes
+""" MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads') """
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -136,7 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 # nota: (users) se refiere a la aplicacion y (User) se refiere al modelo
 CORS_ORIGIN_ALLOW_ALL = True
-CARS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 #es para decir cual sera el tiempo de vida del acces token que se va a crear cuando se autentique
 """ SIMPLE_JWT = {
