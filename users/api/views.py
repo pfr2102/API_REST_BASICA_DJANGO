@@ -6,6 +6,7 @@ from icard.permissions import CustomDjangoModelPermission #no es mas que DjangoM
 from django.contrib.auth.hashers import make_password
 
 #importaciones necesarias para hacer solicitudes http personalizadas
+from django.db import transaction
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
@@ -49,6 +50,31 @@ class UserApiViewSet(ModelViewSet):
             data = {"error": f"Error inesperado: {str(e)}"}
             return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+    # Nueva acción para la creación de usuario y asignación de grupos   
+    @action(detail=False, methods=['post'])
+    def create_with_group(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():  # Inicia una transacción
+                # Encripta la contraseña antes de la creación
+                request.data['password'] = make_password(request.data['password'])
+                # Crea el usuario utilizando el método create del ModelViewSet
+                user_response = super().create(request, *args, **kwargs)
+                # Obtiene el usuario creado a partir de la respuesta
+                user_data = user_response.data
+                # Obtiene el ID del grupo a asignar
+                group_id = request.data.get('group')
+                # Verifica si se proporcionó un ID de grupo
+                if group_id is not None:
+                    user_instance = User.objects.get(id=user_data['id'])
+                    user_instance.groups.add(group_id)
+                # Devuelve la respuesta con los datos del usuario creado
+                return user_response
+        except User.DoesNotExist:
+            return Response({"error": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": f"Error inesperado: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 #creamos otra vista para obtener los datos del usuario que se autentica
 class UserView(APIView):
