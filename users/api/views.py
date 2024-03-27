@@ -53,6 +53,14 @@ class UserApiViewSet(ModelViewSet):
     # Nueva acción para la creación de usuario y asignación de grupos   
     @action(detail=False, methods=['post'])
     def create_with_group(self, request, *args, **kwargs):
+        """
+        Crea un usuario con un grupo asignado.
+
+        Permite crear un usuario y asignarle un grupo existente. El grupo debe ser proporcionado en el campo 'group'.
+        """
+        # Verifica si se proporcionó un grupo
+        if 'group' not in request.data:
+            return Response({"error": "Se requiere el ID del grupo."}, status=status.HTTP_400_BAD_REQUEST)
         try:
             with transaction.atomic():  # Inicia una transacción
                 # Encripta la contraseña antes de la creación
@@ -73,6 +81,36 @@ class UserApiViewSet(ModelViewSet):
             return Response({"error": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": f"Error inesperado: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    @action(detail=False, methods=['post'])
+    def create_users_with_groupsM(self, request, *args, **kwargs):
+        """
+        Crea usuarios con grupos asignados de forma masiva.
+
+        Permite crear usuarios en grandes cantidades proporcionando una lista de datos de usuarios.
+        Cada dato de usuario debe tener el formato requerido por el serializador UserSerializer.
+        Además, cada usuario puede incluir un campo 'group' para especificar el ID del grupo al que se asignará.
+        """
+        serializer = UserSerializer(data=request.data, many=isinstance(request.data, list))
+        if serializer.is_valid():
+            try:
+                with transaction.atomic():
+                    for user_data in serializer.validated_data:
+                        user_data['password'] = make_password(user_data['password']) # Encripta la contraseña
+                        user_instance = User.objects.create(**user_data)
+                        # Obtiene el ID del grupo a asignar
+                        group_id = user_data.get('group')
+                        # Verifica si se proporcionó un ID de grupo
+                        if group_id is not None:
+                            user_instance.groups.add(group_id)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
