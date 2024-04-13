@@ -38,6 +38,9 @@ Para comenzar a trabajar en este proyecto en tu máquina local, sigue estos paso
     python manage.py createsuperuser
 
 > [!NOTE]
+> cuando creas un superusuario por terminal de comandos es importante que en el archivo model.py de users comentes las 2 ultimas lineas esto ya que de no comentarlas solo te pedira el email y tambien necesita pedirte el username si no no te lo crea correctamente. despues de crearlo ya las puedes descomentar para que al autentificarte te pida como nombre de usuario el correo
+
+> [!NOTE]
 > ## Push y Pull desde tu repositorio local
 >
    > - **git push** <-- con esto mandas al repo remoto todas las modificaciones de tu repo local, asi que cada vez que lo uses tienes que estar seguro de que tu proyecto este en una version estable y sin fallas o en  todo caso hacer una rama para hacer calis y hacer todos los push que quieras sin afectar la rama main que tiene la version estable.
