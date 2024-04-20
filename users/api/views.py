@@ -30,12 +30,42 @@ class UserApiViewSet(ModelViewSet):
         request.data['password'] = make_password(request.data['password'])
         return super().create(request, *args, **kwargs)
     
+
     #SOBRE- ESCRIBIMOS EL METODO DEL PATCH DE LA SUPERCLASE PARA QUE DETECTE CUANDO SE MODIFICO LA CONTRASEÑA Y LA ENCRIPTE DE NUEVO
+    #TAMBIEN SE ASIGNA EL NUEVO GRUPO EN CASO DE EXISTIR EN LA SOLICITUD DE ACTUALIZACION (REQUEST)
     def partial_update(self, request, *args, **kwargs):
+        """
+        Actualizar un usuario con un nuevo grupo asignado.
+
+        Permite crear un usuario y asignarle un nuevo grupo existente. 
+        El grupo debe ser proporcionado en el campo 'group'. 
+        internamente esto actualiza la tabla (users_user_group) la cual administra las relaciones entre grupos y usuarios como tabla intermediaria.
+        """
+        try:
+            with transaction.atomic():  # Inicia una transacción
+                # Obtener el ID del nuevo grupo enviado en la solicitud a actualizar 
+                group_id = request.data.get('group')  
+                if group_id is not None: 
+                    # Obtener el usuario
+                    user = self.get_object()  
+                    # Eliminar todos los grupos asociados actualmente al usuario
+                    user.groups.clear()
+                    # Agregar el nuevo grupo al usuario
+                    user.groups.add(group_id)
+
+                password = request.data.get('password')
+                if password is not None:
+                    request.data['password'] = make_password(password)
+                return super().partial_update(request, *args, **kwargs)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    #SOBRE- ESCRIBIMOS EL METODO DEL PATCH DE LA SUPERCLASE PARA QUE DETECTE CUANDO SE MODIFICO LA CONTRASEÑA Y LA ENCRIPTE DE NUEVO
+    """ def partial_update(self, request, *args, **kwargs):
         password = request.data.get('password')
         if password is not None:
             request.data['password'] = make_password(password)
-        return super().partial_update(request, *args, **kwargs)
+        return super().partial_update(request, *args, **kwargs) """
     
     
     #EJEMPLO DE COMO CREAR TU PROPIA SOLICITUD HTTP PERSONALISADA    
